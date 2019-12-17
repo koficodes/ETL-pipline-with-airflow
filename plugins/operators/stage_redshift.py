@@ -6,7 +6,7 @@ from airflow.utils.decorators import apply_defaults
 class StageToRedshiftOperator(BaseOperator):
     ui_color = '#358140'
     
-    copy_sql = """
+    sql = """
         COPY {}
         FROM '{}'
         ACCESS_KEY_ID '{}'
@@ -36,7 +36,6 @@ class StageToRedshiftOperator(BaseOperator):
         self.ignore_headers=ignore_headers
 
     def execute(self, context):
-#         self.log.info('StageToRedshiftOperator not implemented yet')
         aws_hook = AwsHook(self.aws_credential_id)
         credentials = aws_hook.get_credentials()
         redshift = PostgresHook(postgres_conn_id=self.redshift_connection_id)
@@ -47,7 +46,7 @@ class StageToRedshiftOperator(BaseOperator):
         formatted_key = self.s3_key.format(**context)
         s3_path = "s3a://{}/{}".format(self.s3_bucket, formatted_key)
         
-        sql = StageToRedshiftOperator.copy_sql.format(
+        formatted_sql = StageToRedshiftOperator.sql.format(
             self.table,
             s3_path,
             credentials.access_key,
@@ -56,7 +55,7 @@ class StageToRedshiftOperator(BaseOperator):
             self.delimiter
         )
         
-        redshift.run(sql)
+        redshift.run(formatted_sql)
 
 
 

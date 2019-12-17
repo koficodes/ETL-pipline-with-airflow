@@ -29,7 +29,7 @@ dag = DAG('Sparkify ETL pipeline',
 
 start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
 
-create_tables = PostgresOperator(task_id='Creat Table',
+create_tables = PostgresOperator(task_id='Create Table',
                                dag = dag,
                                postgres_conn_id="redshift",
                                sql=SqlQueries.create_tables)
@@ -38,16 +38,28 @@ create_tables = PostgresOperator(task_id='Creat Table',
 stage_events_to_redshift = StageToRedshiftOperator(
     task_id='Stage_events',
     dag=dag
+    table="staging_events",
+    redshift_conn_id="redshift",
+    aws_credentials_id="aws_credentials",
+    s3_bucket="karikari-udacity",
+    s3_key="log_data"
 )
 
 stage_songs_to_redshift = StageToRedshiftOperator(
     task_id='Stage_songs',
-    dag=dag
+    dag=dag,
+    table="staging_songs",
+    redshift_conn_id="redshift",
+    aws_credentials_id="aws_credentials",
+    s3_bucket="karikari-udacity",
+    s3_key="song_data"
 )
 
 load_songplays_table = LoadFactOperator(
     task_id='Load_songplays_fact_table',
-    dag=dag
+    dag=dag,
+    redshift_conn_id="redshif",
+    sql_query=SqlQueries.songplay_table_insert
 )
 
 load_user_dimension_table = LoadDimensionOperator(
