@@ -5,7 +5,16 @@ from airflow.utils.decorators import apply_defaults
 
 class StageToRedshiftOperator(BaseOperator):
     ui_color = '#358140'
-    copy_url = 
+    
+    copy_sql = """
+        COPY {}
+        FROM '{}'
+        ACCESS_KEY_ID '{}'
+        SECRET_ACCESS_KEY '{}'
+        IGNOREHEADER {}
+        DELIMITER '{}'
+    """
+    
     @apply_defaults
     def __init__(self,
                  redshift_connection_id="",
@@ -27,7 +36,8 @@ class StageToRedshiftOperator(BaseOperator):
         self.ignore_headers=ignore_headers
 
     def execute(self, context):
-        self.log.info('StageToRedshiftOperator not implemented yet')
+#         self.log.info('StageToRedshiftOperator not implemented yet')
+        
 
 
 
