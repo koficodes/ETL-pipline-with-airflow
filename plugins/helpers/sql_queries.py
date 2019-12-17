@@ -42,6 +42,8 @@ class SqlQueries:
     """)
     
     create_tables = """
+    DROP TABLE IF EXISTS public.artists;
+    
     CREATE TABLE public.artists (
         artistid varchar(256) NOT NULL,
         name varchar(256),
@@ -49,7 +51,8 @@ class SqlQueries:
         lattitude numeric(18,0),
         longitude numeric(18,0)
     );
-
+    
+    DROP TABLE IF EXISTS public.songplays;
     CREATE TABLE public.songplays (
         playid varchar(32) NOT NULL,
         start_time timestamp NOT NULL,
@@ -62,7 +65,9 @@ class SqlQueries:
         user_agent varchar(256),
         CONSTRAINT songplays_pkey PRIMARY KEY (playid)
     );
-
+    
+    DROP TABLE IF EXISTS public.songs;
+    
     CREATE TABLE public.songs (
         songid varchar(256) NOT NULL,
         title varchar(256),
@@ -71,7 +76,8 @@ class SqlQueries:
         duration numeric(18,0),
         CONSTRAINT songs_pkey PRIMARY KEY (songid)
     );
-
+    
+    DROP TABLE IF EXISTS public.staging_events
     CREATE TABLE public.staging_events (
         artist varchar(256),
         auth varchar(256),
@@ -93,6 +99,7 @@ class SqlQueries:
         userid int4
     );
 
+    DROP TABLE IF EXISTS public.staging_songs;
     CREATE TABLE public.staging_songs (
         num_songs int4,
         artist_id varchar(256),
@@ -105,20 +112,9 @@ class SqlQueries:
         duration numeric(18,0),
         "year" int4
     );
-
-    CREATE TABLE public.staging_songs (
-        num_songs int4,
-        artist_id varchar(256),
-        artist_name varchar(256),
-        artist_latitude numeric(18,0),
-        artist_longitude numeric(18,0),
-        artist_location varchar(256),
-        song_id varchar(256),
-        title varchar(256),
-        duration numeric(18,0),
-        "year" int4
-    );
-
+    
+    DROP TABLE IF EXISTS public.users;
+    
     CREATE TABLE public.users (
         userid int4 NOT NULL,
         first_name varchar(256),

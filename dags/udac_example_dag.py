@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 
 default_args = {
     'owner': 'udacity',
-    'start_date': datetime(2019, 1, 12),
+    'start_date': datetime.now(),
     'depend_on_past': False,
     'retries': 3,
     'retry_day': timedelta(minutes=5),
@@ -24,7 +24,7 @@ default_args = {
 dag = DAG('Sparkify ETL pipeline',
           default_args=default_args,
           description='Load and transform data in Redshift with Airflow',
-          schedule_interval='0 * * * *'
+          schedule_interval='@hourly'
         )
 
 start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
@@ -59,6 +59,7 @@ load_songplays_table = LoadFactOperator(
     task_id='Load_songplays_fact_table',
     dag=dag,
     redshift_conn_id="redshift",
+    table="songplays"
     sql_query=SqlQueries.songplay_table_insert
 )
 
@@ -66,6 +67,7 @@ load_user_dimension_table = LoadDimensionOperator(
     task_id='Load_user_dim_table',
     dag=dag,
     redshift_conn_id="redshift",
+    table="users"
     sql_query=SqlQueries.songplay_table_insert
 )
 
@@ -73,6 +75,7 @@ load_song_dimension_table = LoadDimensionOperator(
     task_id='Load_song_dim_table',
     dag=dag,
     redshift_conn_id="redshift",
+    table="songs"
     sql_query=SqlQueries.song_table_insert
 )
 
@@ -80,6 +83,7 @@ load_artist_dimension_table = LoadDimensionOperator(
     task_id='Load_artist_dim_table',
     dag=dag,
     redshift_conn_id="redshift",
+    table="artists"
     sql_query=SqlQueries.artist_table_insert
 )
 
@@ -87,6 +91,7 @@ load_time_dimension_table = LoadDimensionOperator(
     task_id='Load_time_dim_table',
     dag=dag,
     redshift_conn_id="redshift",
+    table=""
     sql_query=SqlQueries.time_table_insert
 )
 
