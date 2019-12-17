@@ -4,7 +4,7 @@ from airflow.utils.decorators import apply_defaults
 
 class StageToRedshiftOperator(BaseOperator):
     ui_color = '#358140'
-
+    copy_url = 
     @apply_defaults
     def __init__(self,
                  # Define your operators params (with defaults) here
