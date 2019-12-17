@@ -37,7 +37,26 @@ class StageToRedshiftOperator(BaseOperator):
 
     def execute(self, context):
 #         self.log.info('StageToRedshiftOperator not implemented yet')
+        aws_hook = AwsHook(self.aws_credential_id)
+        credentials = aws_hook.get_credentials()
+        redshift = PostgresHook(postgres_conn_id=self.redshift_connection_id)
         
+        # Clear all records
+        redshift.run("TRUNCATE {}".format(self.table))
+        
+        formatted_key = self.s3_key.format(**context)
+        s3_path = "s3a://{}/{}".format(self.s3_bucket, formatted_key)
+        
+        sql = StageToRedshiftOperator.copy_sql.format(
+            self.table,
+            s3_path,
+            credentials.access_key,
+            credentials.secret_key,
+            self.ignore_headers,
+            self.delimiter
+        )
+        
+        redshift.run(sql)
 
 
 
