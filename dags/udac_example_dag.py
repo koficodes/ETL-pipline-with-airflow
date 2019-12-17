@@ -37,7 +37,7 @@ create_tables = PostgresOperator(task_id='Create Table',
 
 stage_events_to_redshift = StageToRedshiftOperator(
     task_id='Stage_events',
-    dag=dag
+    dag=dag,
     table="staging_events",
     redshift_conn_id="redshift",
     aws_credentials_id="aws_credentials",
@@ -59,7 +59,7 @@ load_songplays_table = LoadFactOperator(
     task_id='Load_songplays_fact_table',
     dag=dag,
     redshift_conn_id="redshift",
-    table="songplays"
+    table="songplays",
     sql_query=SqlQueries.songplay_table_insert
 )
 
@@ -67,7 +67,7 @@ load_user_dimension_table = LoadDimensionOperator(
     task_id='Load_user_dim_table',
     dag=dag,
     redshift_conn_id="redshift",
-    table="users"
+    table="users",
     sql_query=SqlQueries.songplay_table_insert
 )
 
@@ -75,7 +75,7 @@ load_song_dimension_table = LoadDimensionOperator(
     task_id='Load_song_dim_table',
     dag=dag,
     redshift_conn_id="redshift",
-    table="songs"
+    table="songs",
     sql_query=SqlQueries.song_table_insert
 )
 
@@ -83,7 +83,7 @@ load_artist_dimension_table = LoadDimensionOperator(
     task_id='Load_artist_dim_table',
     dag=dag,
     redshift_conn_id="redshift",
-    table="artists"
+    table="artists",
     sql_query=SqlQueries.artist_table_insert
 )
 
@@ -91,7 +91,7 @@ load_time_dimension_table = LoadDimensionOperator(
     task_id='Load_time_dim_table',
     dag=dag,
     redshift_conn_id="redshift",
-    table=""
+    table="time",
     sql_query=SqlQueries.time_table_insert
 )
 

@@ -21,9 +21,9 @@ class LoadDimensionOperator(BaseOperator):
                  redshift_connection_id=""
                  aws_credential_id="",
                  sql_query="",
-                 delimiter=","
+                 delimiter=",",
                  ignore_headers=1,
-                 delete_load=True
+                 delete_load=True,
                  *args, **kwargs):
 
         super(LoadDimensionOperator, self).__init__(*args, **kwargs)

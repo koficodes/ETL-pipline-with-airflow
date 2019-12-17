@@ -16,13 +16,13 @@ class LoadFactOperator(BaseOperator):
     """
     @apply_defaults
     def __init__(self,
-                 table=""
-                 redshift_connection_id=""
+                 table="",
+                 redshift_connection_id="",
                  aws_credential_id="",
                  sql_query="",
-                 delimiter=","
+                 delimiter=",",
                  ignore_headers=1,
-                 delete_load=True
+                 delete_load=True,
                  *args, **kwargs):
 
         super(LoadFactOperator, self).__init__(*args, **kwargs)
