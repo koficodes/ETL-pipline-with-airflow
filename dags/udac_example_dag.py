@@ -21,7 +21,7 @@ default_args = {
     'catchup': False
 }
 
-dag = DAG('Sparkify ETL pipeline',
+dag = DAG('Sparkify_ETL_pipeline',
           default_args=default_args,
           description='Load and transform data in Redshift with Airflow',
           schedule_interval='@hourly'
@@ -29,7 +29,7 @@ dag = DAG('Sparkify ETL pipeline',
 
 start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
 
-create_tables = PostgresOperator(task_id='Create Table',
+create_tables = PostgresOperator(task_id='Create_Tables',
                                dag = dag,
                                postgres_conn_id="redshift",
                                sql=SqlQueries.create_tables)
@@ -103,10 +103,10 @@ run_quality_checks = DataQualityOperator(
 
 end_operator = DummyOperator(task_id='Stop_execution',  dag=dag)
 
-start_operator >> create_table 
+start_operator >> create_tables 
 
-create_table >> stage_events_to_redshift
-create_table >> stage_songs_to_redshift
+create_tables >> stage_events_to_redshift
+create_tables >> stage_songs_to_redshift
 
 stage_events_to_redshift >> load_songplays_table
 stage_songs_to_redshift >> load_songplays_table

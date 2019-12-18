@@ -23,7 +23,7 @@ class StageToRedshiftOperator(BaseOperator):
                  s3_bucket="",
                  s3_key="",
                  delimiter=",",
-                 ingore_headers=1,
+                 ignore_headers=1,
                  delete_load=True,
                  *args, **kwargs):
 
@@ -35,14 +35,16 @@ class StageToRedshiftOperator(BaseOperator):
         self.s3_key=s3_key
         self.delimiter=delimiter
         self.ignore_headers=ignore_headers
+        self.delete_load=delete_load
 
     def execute(self, context):
         aws_hook = AwsHook(self.aws_credential_id)
         credentials = aws_hook.get_credentials()
         redshift = PostgresHook(postgres_conn_id=self.redshift_connection_id)
         
-        # Clear all records
-        redshift.run("TRUNCATE {}".format(self.table))
+        if self.delete_load:
+           self.log.info(f"Clearing data from {self.table}")
+           redshift.run("DELETE FROM {}".format(self.table))
         
         formatted_key = self.s3_key.format(**context)
         s3_path = "s3a://{}/{}".format(self.s3_bucket, formatted_key)
@@ -56,6 +58,7 @@ class StageToRedshiftOperator(BaseOperator):
             self.delimiter
         )
         
+        self.log.info(f"Running {formatted_sql}")
         redshift.run(formatted_sql)
 
 

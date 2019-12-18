@@ -1,4 +1,5 @@
 from airflow.hooks.postgres_hook import PostgresHook
+from airflow.contrib.hooks.aws_hook import AwsHook
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
@@ -18,7 +19,7 @@ class LoadDimensionOperator(BaseOperator):
     @apply_defaults
     def __init__(self,
                  table="",
-                 redshift_connection_id=""
+                 redshift_connection_id="",
                  aws_credential_id="",
                  sql_query="",
                  delimiter=",",
@@ -38,7 +39,7 @@ class LoadDimensionOperator(BaseOperator):
         credentials  = AwsHook(self.aws_credential_id).get_credentials()
         redshift = PostgresHook(postgres_conn_id=redshift_connection_id)
         
-        if delete_load:
+        if self.delete_load:
             self.log.info(f"Clearing data from {self.table}")
             redshift.run("DELETE FROM {}".format(self.table))
             
